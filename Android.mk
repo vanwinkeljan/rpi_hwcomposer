@@ -15,22 +15,18 @@
 
 LOCAL_PATH := $(call my-dir)
 
-# HAL module implemenation, not prelinked and stored in
-# hw/<OVERLAY_HARDWARE_MODULE_ID>.<ro.product.board>.so
 include $(CLEAR_VARS)
-LOCAL_PRELINK_MODULE := false
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
-LOCAL_SHARED_LIBRARIES := liblog libEGL libc libGLESv1_CM libv3d
+LOCAL_SHARED_LIBRARIES := liblog libEGL libc libGLESv1_CM libv3d libGLES_$(TARGET_BOARD_PLATFORM)
 LOCAL_SRC_FILES := hwcomposer.cpp
-LOCAL_C_INCLUDES += \
-		hardware/libhardware/modules/gralloc \
-		brcm_usrlib/dag/v3d_library/inc \
-		hardware/libhardware/modules/gralloc \
-		hardware/common/opencore/codec/include 
+
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../vmcsx/interface/khronos/include
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../v3d_library/inc
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../gralloc 
 
 LOCAL_CFLAGS += -DDIRECT_RENDERING
 
-LOCAL_MODULE := hwcomposer.default
-LOCAL_CFLAGS:= -DLOG_TAG=\"hwcomposer\"
-LOCAL_MODULE_TAGS := eng
+LOCAL_MODULE := hwcomposer.$(TARGET_BOARD_PLATFORM)
+LOCAL_CFLAGS:= -DLOG_TAG=\"$(TARGET_BOARD_PLATFORM).hwcomposer\"
+LOCAL_MODULE_TAGS := optional
 include $(BUILD_SHARED_LIBRARY)

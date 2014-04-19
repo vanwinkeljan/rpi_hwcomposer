@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 #include <hardware/hardware.h>
 
 #include <fcntl.h>
@@ -90,7 +91,7 @@ hwc_module_t HAL_MODULE_INFO_SYM = {
 /*****************************************************************************/
 
 static void dump_layer(hwc_layer_t const* l) {
-    LOGD("\ttype=%d, flags=%08x, handle=%p, tr=%02x, blend=%04x, {%d,%d,%d,%d}, {%d,%d,%d,%d}",
+    ALOGD("\ttype=%d, flags=%08x, handle=%p, tr=%02x, blend=%04x, {%d,%d,%d,%d}, {%d,%d,%d,%d}",
             l->compositionType, l->flags, l->handle, l->transform, l->blending,
             l->sourceCrop.left,
             l->sourceCrop.top,
@@ -168,20 +169,24 @@ static int get_lib_format(const int& in, u32& format, u32& intformat)
 			format = GHW_PIXEL_FORMAT_YCrCb_420_SP;
 			intformat = GHW_PIXEL_FORMAT_RGB_565;
 			break;
+/*
 		case HAL_PIXEL_FORMAT_YCbCr_420_SP:
 			format = GHW_PIXEL_FORMAT_YCbCr_420_SP;
 			intformat = GHW_PIXEL_FORMAT_RGB_565;
 			break;
+*/
 		case HAL_PIXEL_FORMAT_YV12:
 			format = GHW_PIXEL_FORMAT_YCbCr_420_P;
 			intformat = GHW_PIXEL_FORMAT_RGB_565;
 			break;
+/*
 		case HAL_PIXEL_FORMAT_YCbCr_420_P:
 			format = GHW_PIXEL_FORMAT_YCbCr_420_P;
 			intformat = GHW_PIXEL_FORMAT_RGB_565;
 			break;
+*/
 		default:
-			LOGE("Unsupported format %d",in);
+			ALOGE("Unsupported format %d",in);
 			return -1;
 		}
 	return 0;
@@ -224,7 +229,7 @@ static int hwc_set(hwc_composer_device_t *dev,
 	const private_handle_t* fbhandle = reinterpret_cast <const private_handle_t*> (tempptr);
 
 	if(fbhandle == NULL){
-		LOGE("fbhandle is NULL");
+		ALOGE("fbhandle is NULL");
 		return 0;
 	}
     GhwMemHandle* fbwrap = new GhwMemHandle_Wrap(fbhandle->p_addr + fbhandle->offset,(void*)(fbhandle->base),fbhandle->size);
@@ -247,7 +252,7 @@ static int hwc_set(hwc_composer_device_t *dev,
 				continue;
 				}
 			if(get_lib_format(handle->format,format,intformat)) {
-				LOGE("Skipping layer draw with unknown format %d",handle->format);
+				ALOGE("Skipping layer draw with unknown format %d",handle->format);
 				continue;
 				}
 			GhwMemHandle* wrap = new GhwMemHandle_Wrap(handle->p_addr,(void*)(handle->base),handle->size/2);
@@ -318,7 +323,7 @@ static int hwc_set(hwc_composer_device_t *dev,
         if(t1.tv_sec == ctx->logtime) {
 			ctx->ucount++;
 			} else {
-			LOGE("FrameBuffer [%d] reloads", ctx->ucount);
+			ALOGE("FrameBuffer [%d] reloads", ctx->ucount);
 			ctx->ucount = 1;
 			ctx->logtime = t1.tv_sec;
 			}
@@ -348,7 +353,7 @@ static int hwc_device_open(const struct hw_module_t* module, const char* name,
         struct hw_device_t** device)
 {
     int status = -EINVAL;
-	LOGE("hwc_device_open");
+	ALOGE("hwc_device_open");
     if (!strcmp(name, HWC_HARDWARE_COMPOSER)) {
         struct hwc_context_t *dev;
         dev = (hwc_context_t*)malloc(sizeof(*dev));
