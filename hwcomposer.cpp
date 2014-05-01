@@ -34,6 +34,8 @@
 #include <EGL/eglext.h>
 #include <GLES/gl.h>
 
+#include "brcm_egl.h"
+
 /*****************************************************************************/
 namespace ghw{
 
@@ -379,3 +381,23 @@ static int hwc_device_open(const struct hw_module_t* module, const char* name,
     }
     return status;
 }
+
+
+EGLClientBuffer eglGetRenderBufferANDROID(EGLDisplay display, EGLSurface surface_)
+{
+        struct surface *surface = (struct surface *)surface_;
+        return (EGLClientBuffer) surface->buffer->handle;
+}
+
+void* eglGetComposerANDROID(EGLDisplay dpy, EGLSurface draw)
+{
+/*
+        struct context *current_context = brcm_egl_get_current();
+        if (current_context)
+                return getComposer(current_context->composer);
+        else
+                return NULL;
+*/
+    return NULL;
+}
+
